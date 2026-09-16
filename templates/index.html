@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Student Performance Predictor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main class="page-shell">
+        <section class="intro">
+            <p class="eyebrow">AI-ASSISTED ACADEMIC SUPPORT</p>
+            <h1>Understand the path to a stronger result.</h1>
+            <p class="intro-copy">Enter current study information to receive an estimated pass outcome, confidence scores, and a personalised next-step plan.</p>
+            <div class="trust-list">
+                <span>Prediction estimate</span>
+                <span>Practical guidance</span>
+                <span>Private input</span>
+            </div>
+        </section>
+
+        <section class="panel" aria-labelledby="form-title">
+            <div class="panel-heading">
+                <div>
+                    <p class="eyebrow">STUDENT PROFILE</p>
+                    <h2 id="form-title">Check your performance outlook</h2>
+                </div>
+                <div class="status"><span></span> Model ready</div>
+            </div>
+
+            <form id="prediction-form">
+                <div class="form-grid">
+                    <label>Gender
+                        <select name="Gender" required>
+                            <option value="" disabled selected>Select</option>
+                            <option>Female</option>
+                            <option>Male</option>
+                        </select>
+                    </label>
+                    <label>Parental education
+                        <select name="Parental_Education_Level" required>
+                            <option value="" disabled selected>Select</option>
+                            <option>High School</option>
+                            <option>Bachelors</option>
+                            <option>Masters</option>
+                            <option>PhD</option>
+                        </select>
+                    </label>
+                    <label>Study hours per week
+                        <input name="Study_Hours_per_Week" type="number" min="0" max="168" step="1" placeholder="e.g. 18" required>
+                    </label>
+                    <label>Attendance rate
+                        <input name="Attendance_Rate" type="number" min="0" max="100" step="0.1" placeholder="e.g. 85" required>
+                    </label>
+                    <label>Past exam score
+                        <input name="Past_Exam_Scores" type="number" min="0" max="100" step="1" placeholder="e.g. 72" required>
+                    </label>
+                    <label>Internet access at home
+                        <select name="Internet_Access_at_Home" required>
+                            <option value="" disabled selected>Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select>
+                    </label>
+                    <label>Extracurricular activities
+                        <select name="Extracurricular_Activities" required>
+                            <option value="" disabled selected>Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select>
+                    </label>
+                </div>
+                <button type="submit" id="submit-button">Generate prediction <span>→</span></button>
+                <p class="form-note">This tool provides an estimate for academic planning, not a certain outcome.</p>
+            </form>
+        </section>
+
+        <section class="result-panel is-hidden" id="result-panel" aria-live="polite">
+            <div class="result-header">
+                <p class="eyebrow">YOUR PERFORMANCE OUTLOOK</p>
+                <span id="risk-badge" class="risk-badge"></span>
+            </div>
+            <div class="result-main">
+                <div>
+                    <p class="result-label">Estimated result</p>
+                    <h2 id="prediction-value">—</h2>
+                </div>
+                <div class="probability-grid">
+                    <div class="probability-card"><span>Pass likelihood</span><strong id="pass-probability">—</strong></div>
+                    <div class="probability-card"><span>Fail likelihood</span><strong id="fail-probability">—</strong></div>
+                </div>
+            </div>
+            <div class="support-grid">
+                <article class="support-card support-card-wide">
+                    <p class="result-label">AI explanation</p>
+                    <p id="explanation-content"></p>
+                </article>
+                <article class="support-card">
+                    <p class="result-label">Recommendations</p>
+                    <ol id="recommendations-content"></ol>
+                </article>
+                <article class="support-card">
+                    <p class="result-label">Seven-day study plan</p>
+                    <ol id="study-plan-content"></ol>
+                </article>
+                <article class="support-card support-card-wide encouragement-card">
+                    <p class="result-label">A note for you</p>
+                    <p id="encouragement-content"></p>
+                </article>
+            </div>
+        </section>
+
+        <section class="chat-panel" aria-labelledby="chat-title">
+            <div class="chat-heading">
+                <div>
+                    <p class="eyebrow">STUDY SUPPORT CHAT</p>
+                    <h2 id="chat-title">Ask your study coach</h2>
+                </div>
+                <span class="chat-status"><span></span> Available now</span>
+            </div>
+            <div class="chat-messages" id="chat-messages" aria-live="polite">
+                <div class="message assistant-message">Hi! I can help you create a study plan, improve revision habits, or choose practical next steps. What would you like to work on?</div>
+            </div>
+            <form class="chat-form" id="chat-form">
+                <input id="chat-input" type="text" maxlength="1000" placeholder="Ask about your study plan or recommendations..." required>
+                <button type="submit" id="chat-button">Send <span>↑</span></button>
+            </form>
+        </section>
+    </main>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
