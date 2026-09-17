@@ -10,4 +10,4 @@ services:
       - key: MISTRAL_API_KEY
         sync: false
       - key: MISTRAL_MODEL
-        value: mistral-small-latest
+        value: codestral-2508
