@@ -1,5 +1,6 @@
 import os
 import json
+import re
 from pathlib import Path
 
 import joblib
@@ -116,8 +117,52 @@ def get_ai_support(student, result):
         return fallback
 
 
+def get_local_chat_response(message):
+    """Provide a useful reply if the optional AI provider is unavailable."""
+    question = message.strip().lower()
+
+    if any(term in question for term in ("plan", "schedule", "timetable", "routine")):
+        return (
+            "Yes—you can adjust your study plan whenever it stops fitting your workload. "
+            "Keep one fixed daily study block, choose the most urgent topic first, and leave a short catch-up block at the end of the week. "
+            "Review the plan each Sunday and change only the parts that did not work."
+        )
+    if any(term in question for term in ("revision", "revise", "remember", "memor", "forget")):
+        return (
+            "For better revision, use active recall: close your notes, write what you remember, then check the gaps. "
+            "Revisit the same topic after 1 day, 3 days, and 1 week. Short self-quizzes work better than repeatedly rereading notes."
+        )
+    if any(term in question for term in ("exam", "test", "practice", "question paper")):
+        return (
+            "Prepare for exams by practising questions under timed conditions. After each set, group mistakes into: concepts you do not know, careless errors, and time-management issues. "
+            "Fix one group at a time before attempting another paper."
+        )
+    if any(term in question for term in ("focus", "concentrat", "distraction", "procrastin")):
+        return (
+            "Make starting easy: put your phone away, choose one small task, and set a 25-minute timer. "
+            "During the break, stand up or get water instead of opening social media. If a task feels too big, reduce it to the first five minutes."
+        )
+    if any(term in question for term in ("motivat", "stress", "anxious", "tired", "burnout")):
+        return (
+            "It is normal for motivation to vary. Focus on a small, finishable target today—such as five questions or one page of notes—then take a real break. "
+            "Sleep, food, and short movement breaks also make concentration much easier."
+        )
+    if any(term in question for term in ("time", "busy", "workload", "hours")):
+        return (
+            "Start by listing your fixed commitments, then reserve three to five focused study blocks each week. "
+            "Use the first block for the hardest subject and keep a 15-minute daily review habit so work does not build up."
+        )
+
+    topic = re.sub(r"\s+", " ", message.strip())[:120]
+    return (
+        f"For \"{topic}\", begin with one clear goal and a short focused session. "
+        "Then test yourself with a few questions, note what was difficult, and use that to choose your next study task. "
+        "Tell me the subject or exam you are preparing for and I can make this more specific."
+    )
+
+
 def get_chat_response(message, history):
-    fallback = "Try making the next study step small and specific. Choose one topic, study it for 30 to 45 focused minutes, then practise a few questions and review what you missed."
+    fallback = get_local_chat_response(message)
     api_key = os.getenv("MISTRAL_API_KEY")
     if not api_key:
         return fallback
@@ -140,6 +185,7 @@ def get_chat_response(message, history):
         )
         return response.choices[0].message.content
     except Exception:
+        app.logger.exception("Study-coach AI request failed; using the local response.")
         return fallback
 
 
